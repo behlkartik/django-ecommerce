@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block title %} Create New Item {% endblock title %}
+{% block content %}
+<div class="container">
+    {% if error %}
+        <p> {{ error }} </p>
+    {% else %}
+        <form
+            class="d-flex flex-column gap-2 align-items-start"
+            action="/items/create"
+            method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% comment %} <label for="item-name" class="text-dark">Item Name:</label>
+            <input type="text" name="item-name" hint="kadhai paneer" />
+            <label for="item-price" class="text-dark">Item Price:</label>
+            <input type="text" name="item-price" hint="125.50" />
+            <label for="item-description" class="text-dark">Item Description:</label>
+            <textarea name="item-description"/> </textarea> {% endcomment %}
+            <button name="add-item-btn" class="btn btn-outline-success" type="submit">
+            Add Item
+            </button>
+        </form>
+    {% endif %}
+</div>
+{% endblock content %}

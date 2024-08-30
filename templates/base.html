@@ -1,0 +1,105 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock title %}</title>
+    {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+  </head>
+  <body>
+    <main>
+      <nav class="navbar navbar-light" style="background-color: lightgreen">
+        <div class="container-fluid d-flex mx-4">
+          <a class="navbar-brand" href="{% url 'home' %}">
+            <img
+              src="https://w7.pngwing.com/pngs/757/773/png-transparent-celery-python-node-js-task-celery-miscellaneous-rectangle-grass.png"
+              alt=""
+              width="40"
+              height="30"
+            />
+          </a>
+          <ul class="d-flex flex-row gap-4 navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                aria-current="page"
+                href="{% url 'home' %}"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'list_items' %}">Items</a>
+            </li>
+          </ul>
+          {% if not request.user.is_authenticated %}
+            {% if 'login' in request.path %}
+                <label for="login-btn" class="text-dark">Need an account?</label>
+                <a href="{% url 'register'%}" class="btn btn-sm btn-outline-success">Register</a>
+            {% else %}
+              <form
+                class="d-flex gap-2 align-items-center"
+                action="{% url 'login' %}">
+                <label for="login-btn" class="text-dark"
+                  >Already have an account?</label
+                >
+                <button
+                  name="login-btn"
+                  class="btn btn-outline-success"
+                  type="submit"
+                >
+                  Login
+                </button>
+              </form>
+            {% endif %}
+          
+          {% else %}
+            <div class="dropdown user-dropdown w-25 d-flex justify-content-end">
+              <img
+                src="https://cdn-icons-png.flaticon.com/256/3135/3135823.png"
+                alt="{{request.user.username}}"
+                width="40"
+                height="40"
+                class="dropdown-toggle cursor-pointer"
+                id="dropdownMenuTrigger"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+              />
+              <ul
+                class="dropdown-menu m-0"
+                aria-labelledby="dropdownMenuTrigger"
+              >
+                <li>
+                  <a href="{% url 'changepass' %}" class="dropdown-item"
+                    >Change password for {{request.user.username}}</a
+                  >
+                </li>
+
+                {% if request.user.is_superuser %}
+                <li><hr class="dropdown-divider" /></li>
+                <li><a href="/admin/" class="dropdown-item">Dashboard</a></li>
+                {% endif %}
+                <li><hr class="dropdown-divider" /></li>
+                <li class="dropdown-item">
+                  <form
+                    class="d-flex gap-4 align-items-center"
+                    action="{% url 'logout' %}"
+                    method="POST"
+                  >
+                    {% csrf_token %}
+                    <button
+                      name="logout-btn"
+                      class="btn btn-no-outline"
+                      type="submit"
+                    >
+                      Logout
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </nav>
+    </main>
+    {% block content %} {% endblock content %}
+  </body>
+</html>

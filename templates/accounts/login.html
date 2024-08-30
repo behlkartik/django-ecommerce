@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block title %}Login Page{% endblock title %}
+{%block content %} {% if error %}
+<p class="text-danger">{{error}}</p>
+{% endif %}
+<form
+  class="d-flex flex-column gap-2 align-items-start"
+  action="{% url 'login' %}"
+  method="POST"
+>
+  {% csrf_token %} {{ form.as_p }} {% comment %}
+  <label for="username" class="text-dark">Username</label>
+  <input type="text" name="username" />
+  <label for="password" class="text-dark">Password:</label>
+  <input type="password" name="password" /> {% endcomment %}
+  <button name="login-btn" class="btn btn-outline-success" type="submit">
+    Login
+  </button>
+</form>
+{% endblock content %}

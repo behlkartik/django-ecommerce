@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block title %} All Items {% endblock title %}
+{%block content %}
+<div class="container my-4">
+  <div class="container-fluid d-flex flex-row gap-2">
+    <form action="/items" method="GET" class="d-flex gap-2 align-items-center">
+      <input type="text" name="q" />
+      <button class="btn btn-sm btn-outline-success"type="submit"/>Search</button>
+    </form>
+    <a href="{% url 'create_item' %}" class="btn btn-sm btn-outline-success text-center align-middle" role="button" />Add Item</a>
+  </div>
+  <ul>
+    {% for item in items %}
+    <li>{{ item.name }} | {{ item.price }} | {{ item.description }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock content %}
