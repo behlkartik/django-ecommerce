@@ -1,0 +1,87 @@
+{% extends "base.html" %} {% block title %} Update Order {% endblock title %}
+{% block content %}
+<div class="container">
+    {% if error %}
+        <p> {{ error }} </p>
+    {% endif %}
+    {% if message %}
+        <p> {{ message }} </p>
+    {% endif %}
+    <form
+        class="d-flex flex-column gap-2 align-items-start"
+        action=""
+        method="POST"
+        >
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ item_form.as_p }}
+        <br/>
+        <h4>Order Items</h4>
+        <!-- management_form is required for special fields on formset like TOTAL_FORMS INITIAL_FORMS -->
+        <!-- {% if formset %}
+            {{ formset.management_form }}  
+            <div id="order-item-forms">
+                {% for orderItemForm in formset  %}
+                    <div class="order-item-form">
+                        <h6>Order Item: </h6>
+                        {{orderItemForm.as_p}}
+                    </div>
+                    <br>
+                {% endfor %}
+                <div id="empty-form" class="d-none">{{ formset.empty_form.as_p }}</div>
+            </div>
+            <button id="add-more" type="button" class="btn btn-outline-primary">Add More</button>
+        {% endif %} -->
+        <div class="table-responsive w-100">
+            <table id="order-items" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Order Id</th>
+                        <th>Veg/Non-Veg</th>
+                        <th>Image</th>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Order Date</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for orderItem in order.orderitem_set.all %}
+                        <tr>
+                            <td>{{orderItem.order.id}}</td>
+                            <td>
+                                {% if orderItem.item.veg_nonveg == 'Veg' %}
+                                    <span class="badge rounded-pill bg-success">{{orderItem.item.veg_nonveg}}</span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-danger">{{orderItem.item.veg_nonveg}}</span>
+                                {% endif %}
+                            </td>
+                            <td><img src="{{orderItem.item.image.url}}" alt="{{orderItem.item.image.name}}" width="80px" height="80px"></td>
+                            <td>{{ orderItem.item.name }}</td>
+                            <td>{{orderItem.quantity}}</td>
+                            <td>{{orderItem.item.price}}</td>
+                            <td>{{orderItem.order.created_at}}</td>
+                            <td><a class="btn btn-outline-info" id="edit-oi-{{orderItem.id}}" href="{% url 'edit_order_item' order_id=order.id orderitem_id=orderItem.id%}">Edit</a> </td>
+                            <td><a class="btn btn-outline-danger" id="cancel-oi-{{orderItem.id}}" href="{% url 'cancel_order_item' order_id=order.id orderitem_id=orderItem.id%}">Cancel</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex flex-row gap-4">
+            <button name="save-order" class="btn btn-outline-success" type="submit">
+            Save Order
+            </button>
+           <a name="cancel-order" class="btn btn-outline-danger" href="{% url 'cancel_order' order_id=order.id %}">
+            Cancel Order
+           </a>
+        </div>
+        
+    </form>
+</div>
+<script>
+    new DataTable("#order-items");
+</script>
+{% endblock content %}

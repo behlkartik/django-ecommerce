@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block title %} Update Order {% endblock title %}
+{% block content %}
+<div class="container">
+    {% if error %}
+        <p> {{ error }} </p>
+    {% endif %}
+    {% if message %}
+        <p> {{ message }} </p>
+    {% endif %}
+    <form
+        class="d-flex flex-column gap-2 align-items-start"
+        action=""
+        method="POST"
+        >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="d-flex flex-row gap-4">
+            <button name="save-order" class="btn btn-outline-success" type="submit">
+            Save Order Item
+            </button>
+            <button name="cancel-order" class="btn btn-outline-danger" type="submit">
+            Cancel Order Item
+            </button>
+        </div>
+        
+    </form>
+</div>
+{% endblock content %}

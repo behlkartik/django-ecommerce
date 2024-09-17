@@ -1,0 +1,10 @@
+{% extends "base.html" %} 
+{% block content %}
+{% if order %}
+    <h3>{{ order.id }} <a href="{% url 'update_order' order_id=order.id %}"' order.id %}">Edit</a></h3>
+    <h3>{{ order.customer__name }}</h3>
+    <h3>{{ order.created_at }}</h3>
+    <h3>{{ order.updated_at }}</h3>
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block title %} All Orders {% endblock title %}
+{%block content %}
+<div class="container my-4">
+  <div class="container-fluid d-flex flex-row gap-2">
+    <form action="/orders" method="GET" class="d-flex gap-2 align-items-center">
+      <input type="text" name="q" />
+      <button class="btn btn-sm btn-outline-success"type="submit"/>Search</button>
+    </form>
+    <!-- <a href="{% url 'create_item' %}" class="btn btn-sm btn-outline-success text-center align-middle" role="button" />Add Item</a> -->
+  </div>
+  <ul>
+    {% for order in orders %}
+    <li> <a href="{{ order.get_update_url }}">{{ order.id }}</a> | {{ order.customer.username }} | {{ order.created_at }} | {{ order.updated_at }} | <span class="badge rounded-pill bg-primary">{{ order.status }}</span> </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock content %}

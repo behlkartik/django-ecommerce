@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}
+  My Cart
+{% endblock title %}
+{% block content %}
+<!-- Notification Toasts -->
+{% for message in messages %}
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="cart-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Cart Notification</strong>
+            <span class="tost-header-secondary">now</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+                <span>{{ message }}: <a href="{% url 'show_order' order_id=message.extra_tags %}">{{message.extra_tags}} </a></span>
+        </div>
+    </div>
+  </div>
+{% endfor %}
+<section class="h-100 gradient-custom">
+    <div class="container py-5">
+      <div class="row d-flex justify-content-center my-4">
+        <div class="col-md-8">
+          <div class="card mb-4">
+            <div class="card-header py-3">
+              <h5 class="mb-0">Cart Items ({{ cart.cartitem_set.all.count }})</h5>
+            </div>
+            <div class="card-body w-100">
+                {% for cartItem in cart.cartitem_set.all  %}
+                                    <!-- Single item -->
+                <div class="row">
+                    <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                    <!-- Image -->
+                    <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                        <img src="{{ cartItem.item.image.url }}"
+                        class="w-100" alt="{{ cartItem.item.name }}" />
+                        <a href="#!">
+                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                        </a>
+                    </div>
+                    <!-- Image -->
+                    </div>
+    
+                    <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                    <!-- Data -->
+                    <p><strong>{{ cartItem.item.name }}</strong></p>
+                    <p>{{ cartItem.item.veg_nonveg }}</p>
+                    <p>{{ cartItem.item.description }}</p>
+
+                    <!-- <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-danger btn-sm mb-2" data-mdb-tooltip-init
+                        title="Move to the wish list">
+                        <i class="fas fa-heart"></i>
+                    </button> -->
+                    <!-- Data -->
+                    </div>
+    
+                    <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <!-- Quantity -->
+                    <div style="max-width: 300px">
+                      <form action="{% url 'update_cart' cartItem.id %}" class="d-flex flex-row align-items-baseline" method="POST">
+                        {% csrf_token %}
+                        <button value="decrease" name="action" type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary px-3 me-2"
+                        onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                         -
+                        </button>
+                    
+                        <div data-mdb-input-init class="form-outline">
+                          <input id="form1" min="0" name="quantity" value="{{cartItem.quantity}}" type="number" class="form-control" />
+                          <label class="form-label" for="form1">Quantity</label>
+                        </div>
+                       <button value="increase" name="action" type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary px-3 ms-2"
+                        onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                         +
+                        </button> 
+                        <!-- <button value="remove" name="action" type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary px-3 ms-2"
+                        onclick="this.parentNode.querySelector('input[type=number]').value=0">
+                         Del
+                        </button>  -->
+                      </form>
+                         
+                    </div>
+                    <!-- Quantity -->
+    
+                    <!-- Price -->
+                    <p class="text-start text-md-center">
+                        <strong> INR {{cartItem.item.price}}</strong>
+                    </p>
+                    <!-- Price -->
+                    </div>
+                </div>
+                <!-- Single item -->
+                <hr class="my-4" />
+                {% endfor %}
+            </div>
+          </div>
+          <div class="card mb-4">
+            <div class="card-body">
+              <p><strong>Expected delivery</strong></p>
+              <!-- <p class="mb-0">{{ cart.cartitem_set.first.created_at }}</p> -->
+               September 30th, 21:00 IST
+            </div>
+          </div>
+          <div class="card mb-4 mb-lg-0">
+            <div class="card-body">
+              <p><strong>We accept</strong></p>
+              <img class="me-2" width="45px"
+                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+                alt="Visa" />
+              <img class="me-2" width="45px"
+                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+                alt="American Express" />
+              <img class="me-2" width="45px"
+                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+                alt="Mastercard" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-header py-3">
+              <h5 class="mb-0">Summary</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                  Products
+                  <span>INR {{cart.total}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                  Shipping
+                  <span>Express</span>
+                </li>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                  <div>
+                    <strong>Total amount</strong>
+                    <strong>
+                      <p class="mb-0">(including VAT)</p>
+                    </strong>
+                  </div>
+                  <span><strong>INR {{cart.total}}</strong></span>
+                </li>
+              </ul>
+              {% if cart.cartitem_set.all.count %}
+                <form action="{% url 'create_order' %}" method="post">
+                  {% csrf_token %}
+                  <button  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block">
+                    Checkout
+                  </button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

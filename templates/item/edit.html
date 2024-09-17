@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block title %} Edit Item {% endblock title %}
+{% block content %}
+<div class="container">
+    {% if error %}
+        <p> {{ error }} </p>
+    {% else %}
+    <form
+    class="d-flex flex-column gap-2 align-items-start"
+    action="{% url 'edit_item' %}"
+    method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button name="add-item-btn" class="btn btn-outline-success" type="submit">
+    Add Item
+    </button>
+</form>
+    {% endif %}
+</div>
+{% endblock content %}
