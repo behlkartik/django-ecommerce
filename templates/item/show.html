@@ -1,7 +1,12 @@
 {% extends "base.html" %} {% block content %}
 {% if item %}
     <h3>{{ item.name }}</h3>
-    <h5>{{ item.price }}</h3>
-    <h6>{{ item.description }}</h3>
+    <h3>{{ item.price }}</h3>
+    <h3>{{ item.description }}</h3>
+    <h3>{{ item.type }}</h3>
+    <h3>{{ item.veg_nonveg }}</h3>
+    <h3>{{ item.created_at }}</h3>
+    <h3>{{ item.created_by }}</h3>
+    {% if request.user == item.user %}<a href="{% url 'edit_item' item.slug %}">Edit</a>{% endif %}
 {% endif %}
 {% endblock content %}

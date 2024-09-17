@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", "test")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "test")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "1") == "1"
@@ -38,8 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third-party
+    'bootstrap5',
+    'storages',
+    # internal
     'item',
-    'bootstrap5'
+    'order',
+    'accounts',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -87,7 +93,7 @@ DATABASES = {
         'USER': 'restaurant_app_user',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '5432'
     }
 }
 
@@ -128,7 +134,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static/' # for dev with debug=1
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
+# path where collectstatic will collect and store static assets
+STATIC_ROOT = BASE_DIR / "staticfiles-cdn" # we can use this for nginx configuration to serve static assets
+
+# Base url to serve media files  
+MEDIA_URL = '/media/'  
+  
+# Path where media is stored for local/dev
+MEDIA_ROOT = BASE_DIR / 'media' # we can use this for nginx configuration to serve media assets
+
+if not DEBUG:
+    from .cdn.conf import *
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -136,3 +156,5 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'
+
+# Do this to upload exising files in media directory to s3 ` aws s3 sync media s3://behlkartik-restaurant-app/media `

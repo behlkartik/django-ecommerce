@@ -3,33 +3,60 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.6/css/dataTables.dataTables.css" />   
+    <script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/2.1.6/js/dataTables.js"></script>
+  
     {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
   </head>
   <body>
+    {% load static %}
     <main>
       <nav class="navbar navbar-light" style="background-color: lightgreen">
-        <div class="container-fluid d-flex mx-4">
-          <a class="navbar-brand" href="{% url 'home' %}">
-            <img
-              src="https://w7.pngwing.com/pngs/757/773/png-transparent-celery-python-node-js-task-celery-miscellaneous-rectangle-grass.png"
-              alt=""
-              width="40"
-              height="30"
-            />
-          </a>
-          <ul class="d-flex flex-row gap-4 navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a
-                class="nav-link active"
-                aria-current="page"
-                href="{% url 'home' %}"
-                >Home</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'list_items' %}">Items</a>
-            </li>
-          </ul>
+        <div class="container-fluid d-flex mx-4 flex-row justify-content-between">
+          <div class="brand-with-links d-flex flex-row">
+            <a class="navbar-brand" href="{% url 'home' %}">
+              <img
+                src="https://w7.pngwing.com/pngs/757/773/png-transparent-celery-python-node-js-task-celery-miscellaneous-rectangle-grass.png"
+                alt=""
+                width="40"
+                height="30"
+              />
+            </a>
+            <ul class="d-flex flex-row gap-4 navbar-nav justify-baseline">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  href="{% url 'home' %}"
+                  >Home</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'list_items' %}">Catalog</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'show_cart' %}">
+                    Cart
+                    {% if request.user.is_authenticated %}
+                      <span class="badge rounded-pill bg-success">{{ user.cart_set.first.cartitem_set.all.count }}</span>
+                    {% endif %}
+                  </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'list_orders' %}">
+                  Orders
+                  {% if request.user.is_authenticated %}
+                      <span class="badge rounded-pill bg-success">{{ user.order_set.all.count }}</span>
+                    {% endif %}
+                </a>
+              </li>
+            </ul>
+          </div>
+          
           {% if not request.user.is_authenticated %}
             {% if 'login' in request.path %}
                 <label for="login-btn" class="text-dark">Need an account?</label>
@@ -52,7 +79,7 @@
             {% endif %}
           
           {% else %}
-            <div class="dropdown user-dropdown w-25 d-flex justify-content-end">
+            <div class="btn-group dropdown w-25 d-flex flex-column align-items-end">
               <img
                 src="https://cdn-icons-png.flaticon.com/256/3135/3135823.png"
                 alt="{{request.user.username}}"
@@ -64,36 +91,33 @@
                 data-bs-toggle="dropdown"
               />
               <ul
-                class="dropdown-menu m-0"
+                class="dropdown-menu w-100"
                 aria-labelledby="dropdownMenuTrigger"
               >
                 <li>
                   <a href="{% url 'changepass' %}" class="dropdown-item"
-                    >Change password for {{request.user.username}}</a
+                    >Change password</a
                   >
                 </li>
-
                 {% if request.user.is_superuser %}
                 <li><hr class="dropdown-divider" /></li>
                 <li><a href="/admin/" class="dropdown-item">Dashboard</a></li>
                 {% endif %}
                 <li><hr class="dropdown-divider" /></li>
-                <li class="dropdown-item">
-                  <form
-                    class="d-flex gap-4 align-items-center"
+                <form
+                    class="d-flex flex-row align-items-center justify-content-start px-3"
                     action="{% url 'logout' %}"
                     method="POST"
                   >
                     {% csrf_token %}
                     <button
                       name="logout-btn"
-                      class="btn btn-no-outline"
+                      class="btn btn-outline-info"
                       type="submit"
                     >
                       Logout
                     </button>
                   </form>
-                </li>
               </ul>
             </div>
           {% endif %}
@@ -101,5 +125,6 @@
       </nav>
     </main>
     {% block content %} {% endblock content %}
+    <script src="{% static 'restaurant_app/base.js'%}"></script>
   </body>
 </html>

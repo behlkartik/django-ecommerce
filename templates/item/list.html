@@ -1,17 +1,60 @@
 {% extends "base.html" %} {% block title %} All Items {% endblock title %}
 {%block content %}
+<!-- Notification Toasts -->
+{% for message in messages %}
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="cart-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Cart Notification</strong>
+            <span class="tost-header-secondary">now</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+                {{ message }}
+        </div>
+    </div>
+  </div>
+{% endfor %}
+<!-- Search and filters -->
 <div class="container my-4">
-  <div class="container-fluid d-flex flex-row gap-2">
+  <div class="container-fluid d-flex flex-row gap-4">
     <form action="/items" method="GET" class="d-flex gap-2 align-items-center">
       <input type="text" name="q" />
       <button class="btn btn-sm btn-outline-success"type="submit"/>Search</button>
+      {% if request.user.is_staff %}
+        <a href="{% url 'create_item' %}" class="btn btn-sm btn-outline-success" role="button" />Add Item</a>  
+      {% endif %}
+      <button class="btn btn-sm btn-outline-success" name="veg_nonveg" value="Veg" type="submit">Veg</button>
+      <button class="btn btn-sm btn-outline-success" name="veg_nonveg" value="Non-Veg" type="submit">Non-Veg</button>
     </form>
-    <a href="{% url 'create_item' %}" class="btn btn-sm btn-outline-success text-center align-middle" role="button" />Add Item</a>
+
   </div>
-  <ul>
+  <!-- Item cards -->
+  <div class="row row-cols-3 g-4 w-auto">
     {% for item in items %}
-    <li>{{ item.name }} | {{ item.price }} | {{ item.description }}</li>
+      <div class="col-md-3">
+        <div class="card item-card h-100 w-auto">
+          <img src="{{ item.image.url }}" class="card-img-top h-50" alt="{{ item.name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ item.name }} 
+              {% if item.veg_nonveg == 'Veg' %}
+              <span class="badge rounded-pill bg-success">{{item.veg_nonveg}}</span>
+              {% else %}
+              <span class="badge rounded-pill bg-danger">{{item.veg_nonveg}}</span>
+              {% endif %}
+            </h5>
+            <p class="card-text">{{ item.price }}</p>
+            <p class="card-text">{{ item.description }}</p>
+          </div>
+          <div class="card-footer">
+            <form action="{% url 'add_to_cart' item.id %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-success">Add to Cart</button>
+          </form>
+          </div>
+        </div>
+      </div>
     {% endfor %}
-  </ul>
+  </div>
 </div>
 {% endblock content %}
