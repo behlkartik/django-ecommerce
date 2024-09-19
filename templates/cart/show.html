@@ -13,7 +13,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
         <div class="toast-body">
-                <span>{{ message }}: <a href="{% url 'show_order' order_id=message.extra_tags %}">{{message.extra_tags}} </a></span>
+            {% if message.extra_tags in 'cartitem_removed,cartitem_updated' %}
+              <span>{{ message }} </span>
+            {% else %}
+              <span>{{ message }}: <a href="{% url 'show_order' order_id=message.extra_tags %}">{{message.extra_tags}} </a></span>
+            {% endif %}
         </div>
     </div>
   </div>
@@ -103,7 +107,13 @@
           </div>
           <div class="card mb-4 mb-lg-0">
             <div class="card-body">
-              <p><strong>We accept</strong></p>
+              <p><strong>We accept:</strong></p>
+              <img class="me-2" width="45px"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/2560px-UPI-Logo-vector.svg.png"
+                alt="UPI" />
+              <img class="me-2" width="50px"
+                src="https://cdn.iconscout.com/icon/free/png-256/free-netbanking-icon-download-in-svg-png-gif-file-formats--credit-debit-bank-transaction-payment-methods-vol-1-pack-business-icons-32270.png?f=webp&w=256"
+                alt="Net Banking" />
               <img class="me-2" width="45px"
                 src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
                 alt="Visa" />

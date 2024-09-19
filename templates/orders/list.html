@@ -1,5 +1,6 @@
 {% extends "base.html" %} {% block title %} All Orders {% endblock title %}
 {%block content %}
+{% include "common/messages.html" %}
 <div class="container my-4">
   <div class="container-fluid d-flex flex-row gap-2">
     <form action="/orders" method="GET" class="d-flex gap-2 align-items-center">
@@ -10,7 +11,14 @@
   </div>
   <ul>
     {% for order in orders %}
-    <li> <a href="{{ order.get_update_url }}">{{ order.id }}</a> | {{ order.customer.username }} | {{ order.created_at }} | {{ order.updated_at }} | <span class="badge rounded-pill bg-primary">{{ order.status }}</span> </li>
+    <li> <a href="{{ order.get_update_url }}">{{ order.id }}</a> | {{ order.customer.username }} | {{ order.created_at }} | {{ order.updated_at }} | <span class="badge rounded-pill bg-primary">{{ order.status }}</span> 
+        {% if order.status == "payment failed" %} 
+        <a href="{% url 'retry_payment' order_id=order.id %}"><span>Retry payment</span></a> 
+       {%elif order.status == "pending" %} 
+       <a href="{% url 'make_payment' order_id=order.id %}"><span>Pay</span></a> 
+       <a href="{% url 'cancel_payment' order_id=order.id %}"><span>Cancel</span></a> 
+       {% endif %} 
+      </li>
     {% endfor %}
   </ul>
 </div>

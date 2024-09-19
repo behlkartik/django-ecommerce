@@ -27,6 +27,7 @@ def list_orders(request):
 
 @login_required
 def show_order(request, order_id):
+    print(request, request.GET)
     order = Order.get_by_id(order_id=order_id)
     context = {
         "order": order
@@ -68,18 +69,23 @@ def create_order(request):
     cart.cartitem_set.all().delete()
     cart.total = 0.0
     cart.save()
-    messages.info(
-            request=request,
-            message=f"Order created",
-            extra_tags=str(order.id),
-    )
-    return redirect(reverse('show_cart'))
+    # messages.success(
+    #         request=request,
+    #         message=f"Order created",
+    #         extra_tags=str(order.id),
+    # )
+    return redirect(reverse('make_payment', kwargs={"order_id": order.id}))
 
 
 @login_required
 def cancel_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order.delete()
+    messages.success(
+        request=request,
+        message=f"Order {order_id} cancelled",
+        extra_tags=str(order.id),
+    )
     return redirect(reverse('list_orders'))
 
 @login_required

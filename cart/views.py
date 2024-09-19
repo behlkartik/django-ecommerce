@@ -57,8 +57,19 @@ def update_cart(request, item_id: int):
     elif action == "increase" or action == "decrease":
         if quantity == 0:
             cartItem.delete()
+            messages.success(
+                request=request,
+                message=f"{cartItem.item.name} removed!!!",
+                extra_tags="cartitem_removed",
+            )
         else:
+            prev_quantity = cartItem.quantity
             cartItem.quantity = quantity
             cartItem.save()
+            messages.success(
+                request=request,
+                message=f"{cartItem.item.name} quantity updated from {prev_quantity} to {quantity}",
+                extra_tags="cartitem_updated",
+            )
     cart = get_object_or_404(Cart, customer=request.user)
     return render(request, 'cart/show.html', context={"cart": cart})

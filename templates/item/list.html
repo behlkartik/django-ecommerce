@@ -1,20 +1,7 @@
 {% extends "base.html" %} {% block title %} All Items {% endblock title %}
 {%block content %}
 <!-- Notification Toasts -->
-{% for message in messages %}
-  <div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="cart-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <strong class="me-auto">Cart Notification</strong>
-            <span class="tost-header-secondary">now</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-                {{ message }}
-        </div>
-    </div>
-  </div>
-{% endfor %}
+{% include "common/messages.html" %}
 <!-- Search and filters -->
 <div class="container my-4">
   <div class="container-fluid d-flex flex-row gap-4">

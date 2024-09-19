@@ -23,6 +23,7 @@ from django.conf import settings
 
 from order.views import list_orders, update_order, show_order, cancel_order, cancel_orderitem, update_orderitem, create_order
 from cart.views import add_to_cart, show_cart, update_cart
+from payment.views import cancel_payment, make_payment, payment_status, retry_payment
 
 urlpatterns = [
     path('', home, name='home'),
@@ -40,6 +41,10 @@ urlpatterns = [
     path('orders/create', create_order, name='create_order'),
     path('cart/items/<int:item_id>', add_to_cart, name="add_to_cart"),
     path('cart/items/<int:item_id>/update', update_cart, name="update_cart"),
+    path('payment/<int:order_id>', make_payment, name="make_payment"),
+    path('payment/<int:order_id>/retry', retry_payment, name="retry_payment"),
+    path('payment/<int:order_id>/status', payment_status, name="payment_statu"),
+    path('payment/<int:order_id>/cancel', cancel_payment, name="cancel_payment"),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('register/', register_view, name='register'),

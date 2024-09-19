@@ -14,6 +14,8 @@ User = settings.AUTH_USER_MODEL
 
 class OrderStatus(Enum):
     PENDING = "pending"
+    PAID = "paid"
+    PAYMENT_FAILED = "payment failed"
     DISPATCHED = "dispatched"
     DELIVERED = "delivered"
     CANCELLED = "cancelled"
